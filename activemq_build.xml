@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="activemq" default="deliver-external-mq">
+	
+	<property file=".env" />
+	
+	<target name="copy-local-mq" >
+		<echo message="Copying the mq mentioned in the local path" />
+		<echo message="cp ${external.MQ.Zip.Path} ${app.upload.path}/apache-activemq-${activemq.version}-bin.tar.gz" />
+		<sshexec host="${APPLICATION_HOST_IP}" 
+			username="${APPLICATION_HOST_USER}" 
+			password="${APPLICATION_HOST_PASSWORD}" 
+			port="${APPLICATION_HOST_PORT}" 
+			trust="true" 
+			command="cp ${external.MQ.Zip.Path} ${app.upload.path}/apache-activemq-${activemq.version}-bin.tar.gz" 
+			verbose="true" 
+			failonerror="true" />
+	</target>
+	
+	<target name="deliver-external-mq">
+		<echo message="external mq path - ${external.MQ.Zip.Path} and mq download ${download_mq} ,local mq- ${use_local_mq}"/>
+		<antcall target="copy-local-mq"/>
+		
+		<sshexec host="${APPLICATION_HOST_IP}" 
+			username="${APPLICATION_HOST_USER}" 
+			password="${APPLICATION_HOST_PASSWORD}" 
+			port="${APPLICATION_HOST_PORT}" 
+			trust="true" 
+			command="cd ${app.upload.path}; tar -xvf ./apache-activemq-${activemq.version}-bin.tar.gz" 
+			verbose="true" 
+			failonerror="true" />
+		
+		<sshexec host="${APPLICATION_HOST_IP}" 
+			username="${APPLICATION_HOST_USER}" 
+			password="${APPLICATION_HOST_PASSWORD}" 
+			port="${APPLICATION_HOST_PORT}" 
+			trust="true" 
+			command="sed -i -e 's/tcp:\/\/0.0.0.0:61616/tcp:\/\/0.0.0.0:61666/g' ${app.upload.path}/apache-activemq-${activemq.version}/conf/activemq.xml" 
+			verbose="true" 
+			failonerror="true" />
+		
+		<sshexec host="${APPLICATION_HOST_IP}" 
+			username="${APPLICATION_HOST_USER}" 
+			password="${APPLICATION_HOST_PASSWORD}" 
+			port="${APPLICATION_HOST_PORT}" 
+			trust="true" 
+			command="sed -i -e 's/&lt;property name=&quot;host&quot; value=&quot;127.0.0.1&quot;\/&gt;/&lt;property name=&quot;host&quot; value=&quot;0.0.0.0&quot;\/&gt;/g' ${app.upload.path}/apache-activemq-${activemq.version}/conf/jetty.xml; sed -i -e 's|admin=admin|admin=11@ctiVmqADM|g' ${app.upload.path}/apache-activemq-${activemq.version}/conf/users.properties; sed -i -e '$a\user=11@ctiVmqusr' ${app.upload.path}/apache-activemq-${activemq.version}/conf/users.properties; sed -i -e '$a\users=user' ${app.upload.path}/apache-activemq-${activemq.version}/conf/groups.properties;" 
+			verbose="true" 
+			failonerror="true" />
+		
+		<sshexec host="${APPLICATION_HOST_IP}" 
+			username="${APPLICATION_HOST_USER}" 
+			password="${APPLICATION_HOST_PASSWORD}" 
+			port="${APPLICATION_HOST_PORT}" 
+			trust="true" 
+			command="rm ${app.upload.path}/apache-activemq-${activemq.version}-bin.tar.gz" 
+			verbose="true" 
+			failonerror="false" />
+	</target>
+	
+	<target name="start-external-mq">
+		<sshexec host="${APPLICATION_HOST_IP}" 
+			username="${APPLICATION_HOST_USER}" 
+			password="${APPLICATION_HOST_PASSWORD}" 
+			port="${APPLICATION_HOST_PORT}" 
+			trust="true" 
+			command="/bin/bash -l -c '${app.upload.path}/apache-activemq-${activemq.version}/bin/activemq start'" 
+			verbose="true" 
+			failonerror="false" />
+	</target>
+	
+	<target name="stop-external-mq">
+		<sshexec host="${APPLICATION_HOST_IP}" 
+			username="${APPLICATION_HOST_USER}" 
+			password="${APPLICATION_HOST_PASSWORD}" 
+			port="${APPLICATION_HOST_PORT}" 
+			trust="true" 
+			command="/bin/bash -l -c '${app.upload.path}/apache-activemq-${activemq.version}/bin/activemq stop'" 
+			verbose="true" 
+			failonerror="false" />
+	</target>
+	
+</project>
