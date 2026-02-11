@@ -1,5 +1,8 @@
 pipeline {
     agent any
+    tools {
+        ant 'Ant'
+    }
     parameters {
         string(name: 'INSTALLER_VERSION', defaultValue: '1.0.0', description: 'Installer version')
     }
