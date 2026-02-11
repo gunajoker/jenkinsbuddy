@@ -18,7 +18,6 @@
 		<mkdir dir="Installer" />
 		<scp file="${APPLICATION_HOST_USER}@${APPLICATION_HOST_IP}:${INSTALLER_REMOTE_PATH}" 
 			todir="Installer/" 
-			keyfile="deploy_environment.priv" 
 			password="${APPLICATION_HOST_PASSWORD}" 
 			port="${APPLICATION_HOST_PORT}" 
 			trust="true" 
