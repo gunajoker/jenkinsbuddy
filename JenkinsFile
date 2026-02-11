@@ -15,9 +15,10 @@ pipeline {
             }
             steps {
                 bat """
-                    ant -f build.xml -Dinstaller.version=%INSTALLER_VERSION% retrieve-installer-win32
+                    ant -f build.xml  -Divy.message.logger.level=5 -Dinstaller.version=%INSTALLER_VERSION% retrieve-installer-win32
                 """
             }
         }
     }
 }
+
