@@ -1,5 +1,8 @@
 <ivysettings>
 	<settings defaultResolver="nexus" />
+	<property name="ivy.maven.lookup.sources" value="false" />
+	<property name="ivy.maven.lookup.javadoc" value="false" />
+	
 	<resolvers>
 	  <ibiblio name="nexus" m2compatible="true" root="http://maven.vie.sst.stp/content/groups/stt-bri/"
 	  pattern="[organisation]/[module]/[revision]/[artifact]-[revision](-[classifier]).[ext]"/>
