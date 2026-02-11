@@ -7,6 +7,9 @@ pipeline {
         string(name: 'INSTALLER_VERSION', defaultValue: '1.0.0', description: 'Installer version')
         string(name: 'INSTALLER_REMOTE_PATH', defaultValue: '/opt/installer/installer.zip', description: 'Remote installer path')
         string(name: 'EXTERNAL_MQ_ZIP_PATH', defaultValue: '', description: 'External MQ zip path on remote server')
+        booleanParam(name: 'RUN_RETRIEVE_INSTALLER', defaultValue: true, description: 'Run Retrieve Installer stage')
+        booleanParam(name: 'RUN_DOWNLOAD_INSTALLER_SCP', defaultValue: true, description: 'Run Download Installer via SCP stage')
+        booleanParam(name: 'RUN_DEPLOY_ACTIVEMQ', defaultValue: true, description: 'Run Deploy ActiveMQ stage')
     }
     stages {
         stage('Hello') {
@@ -16,7 +19,7 @@ pipeline {
         }
         stage('Retrieve Installer') {
             when {
-                expression { isUnix() == false }
+                expression { params.RUN_RETRIEVE_INSTALLER && isUnix() == false }
             }
             steps {
                 bat """
@@ -29,6 +32,9 @@ pipeline {
             }
         }
         stage('Download Installer via SCP') {
+            when {
+                expression { params.RUN_DOWNLOAD_INSTALLER_SCP }
+            }
             steps {
                 bat """
                     if not exist lib\\jsch.jar (
@@ -42,6 +48,9 @@ pipeline {
             }
         }
         stage('Deploy ActiveMQ') {
+            when {
+                expression { params.RUN_DEPLOY_ACTIVEMQ }
+            }
             steps {
                 bat """
                     ant -f activemq_build.xml -lib lib -Dexternal.MQ.Zip.Path=%EXTERNAL_MQ_ZIP_PATH% deliver-external-mq
