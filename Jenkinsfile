@@ -14,11 +14,9 @@ pipeline {
                 expression { isUnix() == false }
             }
             steps {
-                sh '''
-                    ant -f build.xml \
-                    -Dinstaller.version=${INSTALLER_VERSION} \
-                    retrieve-installer-win32
-                '''
+                bat """
+                    ant -f build.xml -Dinstaller.version=%INSTALLER_VERSION% retrieve-installer-win32
+                """
             }
         }
     }
