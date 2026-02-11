@@ -6,6 +6,7 @@ pipeline {
     parameters {
         string(name: 'INSTALLER_VERSION', defaultValue: '1.0.0', description: 'Installer version')
         string(name: 'INSTALLER_REMOTE_PATH', defaultValue: '/opt/installer/installer.zip', description: 'Remote installer path')
+        string(name: 'EXTERNAL_MQ_ZIP_PATH', defaultValue: '', description: 'External MQ zip path on remote server')
     }
     stages {
         stage('Hello') {
@@ -23,7 +24,7 @@ pipeline {
                     if not exist lib\\ivy.jar (
                         curl -o lib\\ivy.jar https://repo1.maven.org/maven2/org/apache/ivy/ivy/2.5.2/ivy-2.5.2.jar
                     )
-                   
+                    ant -f build.xml -lib lib -Dinstaller.version=%INSTALLER_VERSION% retrieve-installer-win32
                 """
             }
         }
@@ -40,7 +41,12 @@ pipeline {
                 """
             }
         }
+        stage('Deploy ActiveMQ') {
+            steps {
+                bat """
+                    ant -f activemq_build.xml -lib lib -Dexternal.MQ.Zip.Path=%EXTERNAL_MQ_ZIP_PATH% deliver-external-mq
+                """
+            }
+        }
     }
 }
-
-
