@@ -1,7 +1,11 @@
 pipeline {
     agent any
+    tools {
+        ant 'Ant'
+    }
     parameters {
         string(name: 'INSTALLER_VERSION', defaultValue: '1.0.0', description: 'Installer version')
+        string(name: 'INSTALLER_REMOTE_PATH', defaultValue: '/opt/installer/installer.zip', description: 'Remote installer path')
     }
     stages {
         stage('Hello') {
@@ -15,10 +19,20 @@ pipeline {
             }
             steps {
                 bat """
-                    ant -f build.xml  -Divy.message.logger.level=5 -Dinstaller.version=%INSTALLER_VERSION% retrieve-installer-win32
+                    if not exist lib mkdir lib
+                    if not exist lib\\ivy.jar (
+                        curl -o lib\\ivy.jar https://repo1.maven.org/maven2/org/apache/ivy/ivy/2.5.2/ivy-2.5.2.jar
+                    )
+                    ant -f build.xml -lib lib -Dinstaller.version=%INSTALLER_VERSION% retrieve-installer-win32
+                """
+            }
+        }
+        stage('Download Installer via SCP') {
+            steps {
+                bat """
+                    ant -f build.xml -DINSTALLER_REMOTE_PATH=%INSTALLER_REMOTE_PATH% download-installer-scp
                 """
             }
         }
     }
 }
-

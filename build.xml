@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="installer" default="retrieve-installer-win32" xmlns:ivy="antlib:org.apache.ivy.ant">
 	
+	<property file=".env" />
+	
 	<condition property="isWindows">
 		<os family="windows"/>
 	</condition>
@@ -10,6 +12,17 @@
 		<ivy:resolve file="ivy/ivy.xml" transitive="false" showprogress="false" conf="installer-win32" />
 		<ivy:retrieve conf="installer-win32" pattern="Installer/[artifact].[ext]" />
 		<property name="installer.exe" value="installerc.exe" />
+	</target>
+	
+	<target name="download-installer-scp">
+		<mkdir dir="Installer" />
+		<scp file="${APPLICATION_HOST_USER}@${APPLICATION_HOST_IP}:${INSTALLER_REMOTE_PATH}" 
+			todir="Installer/" 
+			keyfile="deploy_environment.priv" 
+			password="${APPLICATION_HOST_PASSWORD}" 
+			port="${APPLICATION_HOST_PORT}" 
+			trust="true" 
+			verbose="true" />
 	</target>
 	
 </project>
