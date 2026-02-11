@@ -22,6 +22,11 @@
 			port="${APPLICATION_HOST_PORT}" 
 			trust="true" 
 			verbose="true" />
+		<move tofile="Installer/installer.zip">
+					<fileset dir="Installer">
+						<include name="installer*.zip"/>
+					</fileset>
+		</move>
 	</target>
 	
 </project>
