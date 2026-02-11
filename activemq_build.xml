@@ -3,22 +3,20 @@
 	
 	<property file=".env" />
 	
-	<target name="copy-local-mq" >
-		<echo message="Copying the mq mentioned in the local path" />
-		<echo message="cp ${external.MQ.Zip.Path} ${app.upload.path}/apache-activemq-${activemq.version}-bin.tar.gz" />
-		<sshexec host="${APPLICATION_HOST_IP}" 
-			username="${APPLICATION_HOST_USER}" 
+	
+	<target name="upload-local-mq">
+		<echo message="Uploading MQ from local Windows machine to remote server" />
+		<scp file="${external.MQ.Zip.Path}" 
+			todir="${APPLICATION_HOST_USER}@${APPLICATION_HOST_IP}:${app.upload.path}/apache-activemq-${activemq.version}-bin.tar.gz" 
 			password="${APPLICATION_HOST_PASSWORD}" 
 			port="${APPLICATION_HOST_PORT}" 
 			trust="true" 
-			command="cp ${external.MQ.Zip.Path} ${app.upload.path}/apache-activemq-${activemq.version}-bin.tar.gz" 
-			verbose="true" 
-			failonerror="true" />
+			verbose="true" />
 	</target>
 	
 	<target name="deliver-external-mq">
 		<echo message="external mq path - ${external.MQ.Zip.Path} and mq download ${download_mq} ,local mq- ${use_local_mq}"/>
-		<antcall target="copy-local-mq"/>
+		<antcall target="upload-local-mq"/>
 		
 		<sshexec host="${APPLICATION_HOST_IP}" 
 			username="${APPLICATION_HOST_USER}" 
