@@ -19,8 +19,8 @@ pipeline {
             steps {
                 bat """
                     if not exist lib mkdir lib
-                    if not exist lib\ivy.jar (
-                        curl -o lib\ivy.jar https://repo1.maven.org/maven2/org/apache/ivy/ivy/2.5.2/ivy-2.5.2.jar
+                    if not exist lib\\ivy.jar (
+                        curl -o lib\\ivy.jar https://repo1.maven.org/maven2/org/apache/ivy/ivy/2.5.2/ivy-2.5.2.jar
                     )
                     ant -f build.xml -lib lib -Dinstaller.version=%INSTALLER_VERSION% retrieve-installer-win32
                 """
