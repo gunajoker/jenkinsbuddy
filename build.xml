@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="installer" default="retrieve-installer-win32" xmlns:ivy="antlib:org.apache.ivy.ant">
+	
+	<condition property="isWindows">
+		<os family="windows"/>
+	</condition>
+	
+	<target name="retrieve-installer-win32" if="isWindows">
+		<ivy:settings file="ivy/ivysettings.xml" />
+		<ivy:resolve file="ivy/ivy.xml" transitive="false" showprogress="false" conf="installer-win32" />
+		<ivy:retrieve conf="installer-win32" pattern="Installer/[artifact].[ext]" />
+		<property name="installer.exe" value="installerc.exe" />
+	</target>
+	
+</project>

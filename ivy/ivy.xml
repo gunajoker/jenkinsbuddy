@@ -1,0 +1,50 @@
+<ivy-module version="2.0" xmlns:m="http://ant.apache.org/ivy/maven">
+    <info organisation="com.smartstream" module="Automated Build"/>
+	
+	<configurations>
+		<conf name="smartschemaCLI" description="The diffing tool" />
+		<conf name="oracleJdbc" description="Oracle database driver" />
+		<conf name="sqlserverJdbc" description="SQL Server database driver" />
+		<conf name="postgresJdbc" description="PostgreSQL database driver" />
+		<conf name="dbcompare" description="Database comparisons" />
+		<conf name="dbFileUtil" description="DB file creator" />
+		<conf name="ant-contrib" description="ant-contrib" />
+		<conf name="installer-win32" description="installer" />
+		<conf name="installer-linux" description="installer" />
+		<conf name="recs-archive" description="recs-archive zip file" />		
+	</configurations>
+	
+	
+    <dependencies>
+		<dependency org="com.smartstream.recspremium" name="smartschemaCLI-diff" rev="0.0.4" conf="smartschemaCLI->default">
+			<artifact name="smartschemaCLI-diff" ext="zip"/>
+		</dependency>
+		<dependency org="com.smartstream.recspremium" name="dbcompare" rev="1.5.1-SNAPSHOT" conf="dbcompare->default">
+			<artifact name="dbcompare" ext="jar"/>
+		</dependency>
+		<dependency org="com.oracle.database.jdbc" name="ojdbc11" rev="23.5.0.24.07" conf="oracleJdbc->default">
+			<artifact name="ojdbc11" ext="jar"/>
+		</dependency>
+		<dependency org="com.microsoft.sqlserver" name="mssql-jdbc" rev="12.8.1.jre11" conf="sqlserverJdbc->default">
+			<artifact name="mssql-jdbc" ext="jar"/>
+		</dependency>
+		<dependency org="org.postgresql" name="postgresql" rev="42.7.8" conf="postgresJdbc->default">
+			<artifact name="postgresql" ext="jar"/>
+		</dependency>
+		<dependency org="com.smartstream.recs" name="variablesdb-utils" rev="0.0.1" conf="dbFileUtil->default">
+			<artifact name="variablesdb-utils" ext="jar"/>
+		</dependency>
+		<dependency org="ant-contrib" name="ant-contrib" rev="1.0b3" conf="ant-contrib->default">
+			<exclude name="ant"/>
+		</dependency>
+		<dependency org="com.smartstream.morpheus" name="installer" rev="${installer.version}" conf="installer-win32->default">
+			<artifact m:classifier="win32.win32.x86_64" name="installer" ext="zip"/>
+		</dependency>
+		<dependency org="com.smartstream.morpheus" name="installer" rev="${installer.version}" conf="installer-linux->default">
+			<artifact m:classifier="linux.gtk.x86_64" name="installer" ext="zip"/>
+		</dependency>
+		<dependency org="com.smartstream.recs.archive" name="recs-archive-package" rev="${recs.archive.version}" conf="recs-archive->*">
+			<artifact name="recs-archive-package" ext="zip"/>
+		</dependency>	
+    </dependencies>
+</ivy-module>
