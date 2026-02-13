@@ -10,6 +10,7 @@ pipeline {
         booleanParam(name: 'RUN_RETRIEVE_INSTALLER', defaultValue: true, description: 'Run Retrieve Installer stage')
         booleanParam(name: 'RUN_DOWNLOAD_INSTALLER_SCP', defaultValue: true, description: 'Run Download Installer via SCP stage')
         booleanParam(name: 'RUN_DEPLOY_ACTIVEMQ', defaultValue: true, description: 'Run Deploy ActiveMQ stage')
+        booleanParam(name: 'RUN_RETRIEVE_INSTALLERL', defaultValue: true, description: 'Run Retrieve Installer stage for linux')
     }
     stages {
         stage('Hello') {
@@ -47,6 +48,24 @@ pipeline {
                 """
             }
         }
+
+        stage('Download Installer via SCP linux') {
+            when {
+                expression { params.RUN_RETRIEVE_INSTALLERL }
+            }
+            steps {
+                bat """
+                    if not exist lib\\jsch.jar (
+                        curl -o lib\\jsch.jar https://repo1.maven.org/maven2/com/jcraft/jsch/0.1.55/jsch-0.1.55.jar
+                    )
+                    if not exist lib\\ant-jsch.jar (
+                        curl -o lib\\ant-jsch.jar https://repo1.maven.org/maven2/org/apache/ant/ant-jsch/1.10.14/ant-jsch-1.10.14.jar
+                    )
+                    ant -f build.xml -lib lib -DINSTALLER_REMOTE_PATH=%INSTALLER_REMOTE_PATH% download-installer-scp
+                """
+            }
+        }
+
         stage('Deploy ActiveMQ') {
             when {
                 expression { params.RUN_DEPLOY_ACTIVEMQ }
@@ -59,3 +78,4 @@ pipeline {
         }
     }
 }
+
