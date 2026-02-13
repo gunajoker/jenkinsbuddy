@@ -61,7 +61,7 @@ pipeline {
                     if not exist lib\\ant-jsch.jar (
                         curl -o lib\\ant-jsch.jar https://repo1.maven.org/maven2/org/apache/ant/ant-jsch/1.10.14/ant-jsch-1.10.14.jar
                     )
-                    ant -f build.xml -lib lib -DINSTALLER_REMOTE_PATH=%INSTALLER_REMOTE_PATH% download-installer-scp
+                    ant -f build.xml -lib lib -DINSTALLER_REMOTE_PATH=%INSTALLER_REMOTE_PATH% qa-automation-retrieve-installer-linux
                 """
             }
         }
@@ -78,4 +78,5 @@ pipeline {
         }
     }
 }
+
 
