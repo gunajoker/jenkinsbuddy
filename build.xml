@@ -13,6 +13,12 @@
 		<ivy:retrieve conf="installer-win32" pattern="Installer/[artifact].[ext]" />
 		<property name="installer.exe" value="installerc.exe" />
 	</target>
+
+	<target name="qa-automation-retrieve-installer-linux">
+		<ivy:resolve file="ivy/ivy.xml" transitive="false" showprogress="false" conf="installer-linux" />
+		<ivy:retrieve conf="installer-linux" pattern="Installer/Linux/[artifact].[ext]" />
+	</target>
+
 	
 	<target name="download-installer-scp">
 		<mkdir dir="Installer" />
